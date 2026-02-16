@@ -35,7 +35,7 @@ A modern, responsive portfolio website built with Jekyll and deployed on GitHub 
 - **Framework:** Jekyll 4.3+
 - **Ruby Version:** 3.1.4
 - **Hosting:** GitHub Pages
-- **CSS:** Custom styling (900+ lines) with animations
+- **CSS:** Custom styling with animations
 - **Templating:** Liquid
 
 ## Installation & Setup
