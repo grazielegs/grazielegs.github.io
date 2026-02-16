@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{{ page.description | default: site.description }}">
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    {% feed_meta %}
+    {% seo %}
+    <script>
+        // Translation data
+        window.translations = {
+            en: {
+                description: "{{ page.description }}",
+                intro_heading: "{{ page.intro_heading }}",
+                intro_subtitle: "{{ page.intro_subtitle }}",
+                resume_btn: "Resume",
+                projects_btn: "Projects"
+            },
+            pt: {
+                intro_heading: "{{ page.pt.intro_heading }}",
+                intro_subtitle: "{{ page.pt.intro_subtitle }}",
+                resume_btn: "{{ page.pt.resume_btn }}",
+                projects_btn: "{{ page.pt.projects_btn }}"
+            },
+            de: {
+                intro_heading: "{{ page.de.intro_heading }}",
+                intro_subtitle: "{{ page.de.intro_subtitle }}",
+                resume_btn: "{{ page.de.resume_btn }}",
+                projects_btn: "{{ page.de.projects_btn }}"
+            }
+        };
+    </script>
+</head>
+<body>
+    <!-- Language Buttons -->
+    <div class="language-buttons">
+        <button class="lang-btn lang-en" data-lang="en" title="English">EN</button>
+        <button class="lang-btn lang-pt" data-lang="pt" title="Português">PT</button>
+        <button class="lang-btn lang-de" data-lang="de" title="Deutsch">DE</button>
+    </div>
+    
+    {% include header.html %}
+    
+    <main class="hero-grid">
+        <!-- Left Side Profile -->
+        <aside class="hero-profile">
+            <h1>{{ site.title }}</h1>
+            <p class="profile-role">{{ page.description }}</p>
+            
+            <div class="profile-contact-buttons">
+                <a href="mailto:{{ page.contact.email }}" class="contact-btn" title="Email"><i class="fas fa-envelope"></i></a>
+                <a href="{{ page.contact.linkedin }}" target="_blank" class="contact-btn" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="{{ page.contact.github }}" target="_blank" class="contact-btn" title="GitHub"><i class="fab fa-github"></i></a>
+            </div>
+        </aside>
+        
+        <!-- Right Side Content -->
+        <section class="hero-main">
+            <div class="hero-intro">
+                <h2 class="hello-heading" data-translate="intro_heading">{{ page.intro_heading }}</h2>
+                <p class="intro-subtitle" data-translate="intro_subtitle">{{ page.intro_subtitle }}</p>
+            </div>
+            
+            <div class="intro-buttons">
+                <a href="https://drive.google.com/file/d/11X0PcSANceO1Sm5Wxr0qytQRWtg5Uoli/view?usp=sharing" class="btn btn-primary" data-translate="resume_btn" target="_blank" rel="noopener noreferrer">Resume</a>
+                <a href="#projects" id="projects-btn" class="btn btn-secondary" data-translate="projects_btn">Projects</a>
+            </div>
+            
+            <div class="intro-text">
+                {% assign years_experience = 'now' | date: '%Y' | minus: page.qa_start_year %}
+                <p data-lang-en>{{ page.intro_text | replace: 'YEARS_PLACEHOLDER', years_experience }}</p>
+                <p data-lang-pt style="display:none;">{{ page.pt.intro_text | replace: 'YEARS_PLACEHOLDER', years_experience }}</p>
+                <p data-lang-de style="display:none;">{{ page.de.intro_text | replace: 'YEARS_PLACEHOLDER', years_experience }}</p>
+            </div>
+            
+            <h3 class="expertise-heading" data-lang-en>$ expertise topics</h3>
+            <h3 class="expertise-heading" data-lang-pt style="display:none;">$ tópicos de expertise</h3>
+            <h3 class="expertise-heading" data-lang-de style="display:none;">$ expertise themen</h3>
+            
+            <div class="work-tags">
+                {% for tag in page.work_tags %}
+                <span class="tag {{ tag.color }}">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+    
+    {% include footer.html %}
+    
+    <script>
+        // Handle Projects button warning
+        const projectsBtn = document.getElementById('projects-btn');
+        if (projectsBtn) {
+            projectsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('🚧 It\'s under construction!');
+                return false;
+            });
+        }
+
+        // Custom translation system
+        let currentLang = localStorage.getItem('preferredLanguage') || 'en';
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('preferredLanguage', lang);
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+            
+            // Update text elements with data-translate attribute
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (window.translations && window.translations[lang] && window.translations[lang][key]) {
+                    el.textContent = window.translations[lang][key];
+                }
+            });
+            
+            // Update language-specific paragraphs
+            document.querySelectorAll('[data-lang-en], [data-lang-pt], [data-lang-de]').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll(`[data-lang-${lang}]`).forEach(el => {
+                el.style.display = 'block';
+            });
+        }
+
+        // Language button functionality
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const lang = this.getAttribute('data-lang');
+                switchLanguage(lang);
+            });
+        });
+
+        // Initialize on page load - set English as default
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                switchLanguage(currentLang);
+            });
+        } else {
+            switchLanguage(currentLang);
+        }
+    </script>
+</body>
+</html>

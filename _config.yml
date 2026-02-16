@@ -1,2 +1,16 @@
-# theme: jekyll-theme-minimal
-remote_theme: longpdo/neumorphism
+# Jekyll Site Configuration
+title: Graziele Silva
+description: Senior QA | Games, Marketplaces, LiveOps & Platform
+author: Graziele Silva
+email: your-email@example.com
+url: https://grazielegs.github.io
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Site settings
+show_downloads: false
+include: ["_pages"]
